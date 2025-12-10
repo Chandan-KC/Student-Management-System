@@ -80,6 +80,72 @@ app.get("/api/students",async(req,res)=>{
     }
 })
 
+app.put("/api/student/:id",async (req,res)=>{
+    try{
+        const studentId = req.params.id;     // Get ID from URL
+        const updatedData = req.body;        // Updated info from client
+
+        // Find student and update
+        const updatedStudent = await Student.findByIdAndUpdate(
+            studentId,
+            updatedData,
+            { new: true }                    // Return the updated document
+        );
+
+        // If student not found
+        if (!updatedStudent) {
+            return res.status(404).json({
+                success: false,
+                message: "Student not found",
+            });
+        }
+
+        // Success response
+        res.status(200).json({
+            success: true,
+            message: "Student updated successfully",
+            student: updatedStudent,
+        });
+    }
+    catch(error){
+        console.log("Error updating student", error);
+        res.status(500).json({
+            success: false,
+            message: "Server error while updating student",
+        });
+    }
+})
+
+app.delete("/api/student/:id",async (req,res)=>{
+    try {
+        const studentId = req.params.id;  // Get ID from URL
+
+        // Delete the student
+        const deletedStudent = await Student.findByIdAndDelete(req.params.id);
+
+        // If student doesn't exist
+        if (!deletedStudent) {
+            return res.status(404).json({
+                success: false,
+                message: "Student not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Student deleted successfully",
+            student: deletedStudent,
+        });
+
+    } catch (error) {
+        console.log("Error deleting student", error);
+        res.status(500).json({
+            success: false,
+            message: "Server error while deleting student",
+        });
+    }
+})
+
 app.listen(PORT, ()=>{
     console.log("Your Application is running on PORT ",PORT);
 })
