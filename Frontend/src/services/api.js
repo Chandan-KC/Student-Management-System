@@ -21,7 +21,21 @@ export const getAllStudents = async()=>{
 
 }
 
+// Add new Student
 
+export const addStudent = async ({name,age}) => {
+    try{
+        console.log("name", name)
+        const response = await API.post("/student",{name,age});
+        return response.data.messege;
+
+    }
+
+    catch(error){
+        return "Error Creating Student",
+        console.log("Error creating the student", error);
+    }
+}
 
         // for(let i=0;i<studentsArray.length;i++){
         //     console.log("Student Name",StudentObject[i].name);
